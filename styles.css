@@ -1,0 +1,528 @@
+/* Color Variables */
+:root {
+    --bg-light: #F1EBE1;
+    --bg-grey: #CDC0AD;
+    --text-dark: #403A23;
+    --text-light: #FADCCA;
+    --image-viewer: #596853;
+    --video-player: #5C606B;
+    --audio-player: #826845;
+    --email: #CB7041;
+    --notepad: #CAA242;
+    --stratosphere-messenger: #35D4BE;
+    --wavesplice: #B03C11;
+    --assembly: #97BDE9;
+    --oneiric-browser: #7B50A9;
+    --file-manager: #D1C1AC;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: 80px; /* Space for footer */
+}
+
+/* Header */
+.header {
+    background-color: var(--email);
+    color: var(--text-light);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Calendar Container */
+.calendar-container {
+    flex: 1;
+    padding: 30px 40px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flex children to shrink */
+}
+
+/* Calendar Navigation */
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-btn {
+    background-color: var(--text-light);
+    color: var(--text-dark);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 300;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background-color: var(--bg-grey);
+}
+
+.today-btn {
+    background-color: var(--text-light);
+    color: var(--text-dark);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.today-btn:hover {
+    background-color: var(--bg-grey);
+}
+
+.nav-display {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.month-select,
+.year-select {
+    background-color: var(--text-light);
+    border: 1px solid var(--bg-grey);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.year-select option:disabled {
+    color: var(--bg-grey);
+    font-style: italic;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: auto repeat(6, 1fr);
+    gap: 1px;
+    background-color: var(--bg-grey);
+    border: 1px solid var(--bg-grey);
+    border-radius: 4px;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0; /* Important for grid to shrink */
+}
+
+.day-header {
+    background-color: var(--email);
+    color: var(--text-light);
+    padding: 12px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.day-cell {
+    background-color: white;
+    height: 100%;
+    min-height: 0;
+    padding: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.day-cell.other-month {
+    background-color: var(--bg-light);
+    opacity: 0.6;
+}
+
+.day-cell.today {
+    background-color: var(--text-light);
+    border: 2px solid var(--email);
+}
+
+.day-cell.inactive-year {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.day-number {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+/* Event Block */
+.event-block {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    background-color: var(--email);
+    color: var(--text-light);
+    border-radius: 4px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+    z-index: 1;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(100% - 16px);
+    box-sizing: border-box;
+    min-width: 0; /* Important for text truncation in flex children */
+}
+
+.event-block:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.event-block.event-greyed {
+    background-color: var(--bg-grey);
+    color: var(--text-dark);
+    opacity: 0.7;
+}
+
+.event-block.event-locked {
+    background-color: var(--email);
+    color: var(--text-light);
+}
+
+.event-block.event-unlocked {
+    background-color: var(--email);
+    color: var(--text-light);
+    min-height: auto;
+    height: auto !important;
+    max-height: calc(100% - 16px);
+}
+
+.event-time {
+    font-size: 11px;
+    font-weight: 400;
+    margin-bottom: 2px;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+.event-name {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+/* Removed unlock-btn, event-details, event-content, event-media, and event-attendee styles 
+   since we only show event name (single line) after timestamp */
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.modal-event-name {
+    margin-bottom: 20px;
+    color: var(--email);
+    font-weight: 500;
+}
+
+.password-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--bg-grey);
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: var(--email);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-primary {
+    background-color: var(--email);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--wavesplice);
+}
+
+.btn-secondary {
+    background-color: var(--bg-grey);
+    color: var(--text-dark);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: var(--file-manager);
+}
+
+.error-message {
+    color: var(--wavesplice);
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+/* Success Message */
+.success-message {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--stratosphere-messenger);
+    color: white;
+    padding: 15px 40px 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Floating Boxes */
+.floating-box {
+    position: fixed;
+    bottom: 100px;
+    width: 280px;
+    background-color: white;
+    border: 2px solid var(--email);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.floating-subscribe {
+    left: 20px;
+}
+
+.floating-steam {
+    right: 20px;
+}
+
+.floating-box.minimized {
+    width: auto;
+    min-width: 200px;
+}
+
+.floating-box-header {
+    background-color: var(--email);
+    color: var(--text-light);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+}
+
+.floating-box.minimized .floating-box-header {
+    border-radius: 6px;
+}
+
+.floating-box-header span {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.minimize-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 20px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.floating-box-content {
+    padding: 16px;
+}
+
+.floating-box-content p {
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: var(--text-dark);
+}
+
+.subscribe-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--bg-grey);
+    border-radius: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.subscribe-input:focus {
+    outline: none;
+    border-color: var(--email);
+}
+
+.floating-box-content .btn-primary {
+    width: 100%;
+}
+
+.wishlist-box {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    background-color: var(--bg-grey);
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-grey);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+}
+
+.footer-link {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--email);
+}
+
+/* Responsive Design for Desktop/Laptop */
+@media (min-width: 1024px) and (max-width: 1440px) {
+    .calendar-container {
+        padding: 20px 30px;
+    }
+}
+
+@media (min-width: 1441px) {
+    .calendar-container {
+        max-width: 1600px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .calendar-container {
+        padding: 15px 20px;
+    }
+    
+    .floating-box {
+        width: 240px;
+    }
+}
+

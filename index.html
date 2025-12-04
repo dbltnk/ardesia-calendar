@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ardesia Cloud Calendar</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body x-data="calendarApp()" x-init="init()">
+    <!-- Header -->
+    <header class="header">
+        <h1 class="header-title">Ardesia Cloud Calendar</h1>
+        <!-- Calendar Navigation -->
+        <div class="calendar-nav">
+            <button @click="previousMonth()" class="nav-btn">‹</button>
+            <div class="nav-display">
+                <select x-model.number="currentMonth" @change="updateCalendar()" class="month-select">
+                    <template x-for="(month, index) in months">
+                        <option :value="index" x-text="month"></option>
+                    </template>
+                </select>
+                <select x-model.number="currentYear" @change="updateCalendar()" class="year-select">
+                    <template x-for="year in availableYears">
+                        <option :value="year" :disabled="!isYearActive(year)" x-text="year"></option>
+                    </template>
+                </select>
+            </div>
+            <button @click="nextMonth()" class="nav-btn">›</button>
+            <button @click="goToToday()" class="today-btn">Today</button>
+        </div>
+    </header>
+
+    <!-- Main Calendar Container -->
+    <main class="calendar-container">
+        <!-- Calendar Grid -->
+        <div class="calendar-grid">
+            <!-- Day Headers -->
+            <template x-for="day in dayNames">
+                <div class="day-header" x-text="day"></div>
+            </template>
+            
+            <!-- Calendar Days -->
+            <template x-for="(day, index) in calendarDays">
+                <div 
+                    class="day-cell"
+                    :class="{
+                        'other-month': day.otherMonth,
+                        'today': day.isToday,
+                        'inactive-year': !isYearActive(day.year)
+                    }"
+                >
+                    <div class="day-number" x-text="day.date"></div>
+                    <template x-if="day.event">
+                        <div 
+                            class="event-block"
+                            :class="{
+                                'event-greyed': day.event.state === 'greyed',
+                                'event-locked': day.event.state === 'locked',
+                                'event-unlocked': day.event.state === 'unlocked'
+                            }"
+                            :style="getEventStyle(day.event)"
+                            @click="day.event.state === 'locked' && openPasswordModal(day.event)"
+                        >
+                            <div class="event-time" x-text="formatEventTime(day.event)"></div>
+                            <div class="event-name" x-text="day.event.name"></div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </main>
+
+    <!-- Password Modal -->
+    <div x-show="passwordModal.show" class="modal-overlay" @click.self="closePasswordModal()">
+        <div class="modal-content">
+            <h2>Unlock Event</h2>
+            <p class="modal-event-name" x-text="passwordModal.event ? passwordModal.event.name : ''"></p>
+            <input 
+                type="password" 
+                x-model="passwordModal.input"
+                @keyup.enter="checkPassword()"
+                placeholder="Enter password"
+                class="password-input"
+                autofocus
+            >
+            <div class="modal-actions">
+                <button @click="checkPassword()" class="btn-primary">Unlock</button>
+                <button @click="closePasswordModal()" class="btn-secondary">Cancel</button>
+            </div>
+            <p x-show="passwordModal.error" class="error-message" x-text="passwordModal.error"></p>
+        </div>
+    </div>
+
+    <!-- Subscription Success Message -->
+    <div x-show="subscribeSuccess" class="success-message" x-transition>
+        <p>Successfully subscribed! You'll receive updates about calendar changes.</p>
+        <button @click="subscribeSuccess = false" class="close-btn">×</button>
+    </div>
+
+    <!-- Floating Subscribe Box (Bottom Left) -->
+    <div class="floating-box floating-subscribe" :class="{ 'minimized': subscribeMinimized }">
+        <div class="floating-box-header" @click="subscribeMinimized = !subscribeMinimized">
+            <span>Subscribe to Updates</span>
+            <button class="minimize-btn" x-text="subscribeMinimized ? '+' : '−'"></button>
+        </div>
+        <div class="floating-box-content" x-show="!subscribeMinimized">
+            <p>Get notified when the calendar is updated.</p>
+            <input 
+                type="email" 
+                x-model="subscribeEmail"
+                placeholder="Enter your email"
+                class="subscribe-input"
+                @keyup.enter="handleSubscribe()"
+            >
+            <button @click="handleSubscribe()" class="btn-primary">Subscribe</button>
+        </div>
+    </div>
+
+    <!-- Floating Steam Wishlist Box (Bottom Right) -->
+    <div class="floating-box floating-steam" :class="{ 'minimized': steamMinimized }">
+        <div class="floating-box-header" @click="steamMinimized = !steamMinimized">
+            <span>Imprinted</span>
+            <button class="minimize-btn" x-text="steamMinimized ? '+' : '−'"></button>
+        </div>
+        <div class="floating-box-content" x-show="!steamMinimized">
+            <div class="wishlist-box"></div>
+            <button class="btn-primary">Wishlist on Steam</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="#" class="footer-link">About</a>
+        <a href="#" class="footer-link">Imprinted</a>
+        <a href="#" class="footer-link">Cobalt Lane</a>
+        <a href="#" class="footer-link">Substack</a>
+        <a href="#" class="footer-link">Privacy</a>
+        <a href="#" class="footer-link">Legal</a>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
