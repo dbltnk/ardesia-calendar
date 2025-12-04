@@ -225,8 +225,8 @@ body {
 }
 
 .event-block.event-unlocked {
-    background-color: var(--email);
-    color: var(--text-light);
+    background-color: var(--stratosphere-messenger);
+    color: white;
     min-height: auto;
     height: auto !important;
     max-height: calc(100% - 16px);
@@ -250,6 +250,14 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lock-icon {
+    font-size: 12px;
     flex-shrink: 0;
 }
 
@@ -347,6 +355,90 @@ body {
     color: var(--wavesplice);
     font-size: 12px;
     margin-top: 10px;
+}
+
+/* Event Popover */
+.popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.popover-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.popover-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-dark);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.popover-close:hover {
+    background-color: var(--bg-light);
+}
+
+.popover-date {
+    color: var(--bg-grey);
+    font-size: 13px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.popover-title {
+    color: var(--text-dark);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.popover-time {
+    color: var(--stratosphere-messenger);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.popover-text {
+    color: var(--text-dark);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.popover-text p {
+    margin-bottom: 12px;
+}
+
+.popover-text p:last-child {
+    margin-bottom: 0;
 }
 
 /* Success Message */

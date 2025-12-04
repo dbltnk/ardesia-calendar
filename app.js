@@ -23,6 +23,12 @@ function calendarApp() {
             error: ''
         },
         
+        // Event popover
+        eventPopover: {
+            show: false,
+            event: null
+        },
+        
         // Subscription
         subscribeEmail: '',
         subscribeSuccess: false,
@@ -368,12 +374,31 @@ function calendarApp() {
             
             if (this.passwordModal.input === this.passwordModal.event.password) {
                 // Unlock the event
-                this.passwordModal.event.state = 'unlocked';
+                const unlockedEvent = this.passwordModal.event;
+                unlockedEvent.state = 'unlocked';
                 this.closePasswordModal();
+                // Show popover after unlocking
+                this.openEventPopover(unlockedEvent);
             } else {
                 this.passwordModal.error = 'Incorrect password. Try again.';
                 this.passwordModal.input = '';
             }
+        },
+        
+        openEventPopover(event) {
+            this.eventPopover.show = true;
+            this.eventPopover.event = event;
+        },
+        
+        closeEventPopover() {
+            this.eventPopover.show = false;
+            this.eventPopover.event = null;
+        },
+        
+        formatEventDate(event) {
+            const date = event.date;
+            const monthNames = this.months;
+            return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
         },
         
         handleSubscribe() {

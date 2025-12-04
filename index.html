@@ -64,10 +64,13 @@
                                 'event-unlocked': day.event.state === 'unlocked'
                             }"
                             :style="getEventStyle(day.event)"
-                            @click="day.event.state === 'locked' && openPasswordModal(day.event)"
+                            @click="day.event.state === 'locked' ? openPasswordModal(day.event) : openEventPopover(day.event)"
                         >
                             <div class="event-time" x-text="formatEventTime(day.event)"></div>
-                            <div class="event-name" x-text="day.event.name"></div>
+                            <div class="event-name">
+                                <span x-show="day.event.state === 'locked'" class="lock-icon">🔒</span>
+                                <span x-text="day.event.name"></span>
+                            </div>
                         </div>
                     </template>
                 </div>
@@ -93,6 +96,24 @@
                 <button @click="closePasswordModal()" class="btn-secondary">Cancel</button>
             </div>
             <p x-show="passwordModal.error" class="error-message" x-text="passwordModal.error"></p>
+        </div>
+    </div>
+
+    <!-- Event Popover -->
+    <div x-show="eventPopover.show" class="popover-overlay" @click.self="closeEventPopover()">
+        <div class="popover-content">
+            <button @click="closeEventPopover()" class="popover-close">×</button>
+            <template x-if="eventPopover.event">
+                <div>
+                    <div class="popover-date" x-text="formatEventDate(eventPopover.event)"></div>
+                    <h2 class="popover-title" x-text="eventPopover.event.name"></h2>
+                    <div class="popover-time" x-text="formatEventTime(eventPopover.event)"></div>
+                    <div class="popover-text">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 
