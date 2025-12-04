@@ -365,37 +365,17 @@ function calendarApp() {
         },
         
         getEventStyle(event) {
-            const startMinutes = this.parseTimeToMinutes(event.startTime);
-            const endMinutes = this.parseTimeToMinutes(event.endTime);
-            const duration = endMinutes - startMinutes;
-            
-            // Day is 1440 minutes (24 hours)
-            // Calculate positioning based on percentage of day
-            const topPercent = (startMinutes / 1440) * 100;
-            const heightPercent = (duration / 1440) * 100;
-            
-            // Ensure minimum height for visibility (at least 20% of cell height)
-            const minHeightPercent = 20;
-            const calculatedHeightPercent = Math.max(minHeightPercent, heightPercent);
-            
-            // Ensure the event doesn't overflow the bottom of the cell
-            // If top + height would exceed 100%, reduce the height
-            const maxAllowedHeight = 100 - topPercent;
-            const finalHeightPercent = Math.min(calculatedHeightPercent, maxAllowedHeight);
-            
-            // Set minimum top offset to ensure consistent spacing below day-number
+            // All events start at the same Y position
+            // Set fixed top offset to ensure consistent spacing below day-number
             // Day-number is approximately 18px (14px font + 4px margin-bottom) + 8px padding = ~26px
-            // Use 10% as minimum offset (approximately 30-40px in typical cells) to ensure consistent spacing
-            // This ensures all events have the same spacing from the date number
-            const minTopPercent = 10;
-            const finalTopPercent = Math.max(minTopPercent, topPercent);
+            // Use 10% as fixed offset (approximately 30-40px in typical cells) to ensure consistent spacing
+            const topPercent = 35;
             
             // Use fixed height for all events to ensure single-line text display
-            // All events should have consistent height based on duration, constrained to cell
             const style = {
-                top: `${finalTopPercent}%`,
-                height: `${finalHeightPercent}%`,
-                maxHeight: `${maxAllowedHeight}%`
+                top: `${topPercent}%`,
+                height: 'auto',
+                maxHeight: `calc(100% - ${topPercent}%)`
             };
             
             return style;
