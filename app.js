@@ -4,6 +4,14 @@ function calendarApp() {
     const initialYear = now.getFullYear();
     
     return {
+        // User info
+        user: {
+            name: 'Vincent Brandt',
+            email: 'vincent@audiovan.com',
+            initials: 'VB',
+            role: 'Audio Engineer'
+        },
+        
         // Calendar state
         currentMonth: initialMonth,
         currentYear: initialYear,
@@ -14,6 +22,9 @@ function calendarApp() {
         
         // Event data
         events: [],
+        
+        // User menu
+        showUserMenu: false,
         
         // Password modal
         passwordModal: {
@@ -36,6 +47,29 @@ function calendarApp() {
         
         // Steam wishlist
         steamMinimized: false,
+        
+        // Constants
+        DEFAULT_PASSWORD: 'password',
+        
+        handleEventClick(event) {
+            if (event.state === 'greyed') return;
+            if (event.state === 'locked') {
+                this.openPasswordModal(event);
+            } else {
+                this.openEventPopover(event);
+            }
+        },
+        
+        createDayObject(date, otherMonth, isToday, year, month, event = null) {
+            return {
+                date,
+                otherMonth,
+                isToday,
+                year,
+                month,
+                event
+            };
+        },
         
         syncSelectElements(month, year) {
             const monthSelect = document.querySelector('.month-select');
@@ -61,10 +95,6 @@ function calendarApp() {
                 const month = Number(this.currentMonth);
                 const year = Number(this.currentYear);
                 
-                // Explicitly set values to force Alpine to update the select elements
-                this.currentMonth = month;
-                this.currentYear = year;
-                
                 // Manually set select element values as fallback
                 this.$nextTick(() => {
                     this.syncSelectElements(month, year);
@@ -73,119 +103,153 @@ function calendarApp() {
         },
         
         loadSampleEvents() {
-            const today = new Date();
-            const currentDate = today.getDate();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
+            // All events in December 2025
+            const year = 2025;
+            const month = 11; // December (0-indexed)
             
-            // Sample events themed around Vincent Brandt (audio engineer)
+            // First third of December (1-10): 4 unlocked events
+            // Middle third (11-20): 3 locked events
+            // Last third (21-31): 3 greyed out events
             this.events = [
+                // First third - Unlocked events (Dec 2, 4, 6, 8)
                 {
                     id: 1,
-                    date: new Date(currentYear, currentMonth, Math.max(1, currentDate - 5)),
-                    name: 'Audio Restoration Session',
-                    startTime: '09:00',
-                    endTime: '12:00',
-                    state: 'locked',
-                    password: 'password',
-                    content: 'Restoring audio from a 1980s music recording. Client: Independent filmmaker working on a documentary about the local music scene.',
-                    media: {
-                        audio: true
-                    },
-                    attendee: 'Claudia'
-                },
-                {
-                    id: 2,
-                    date: new Date(currentYear, currentMonth, Math.max(1, currentDate - 3)),
-                    name: 'Forensic Audio Analysis',
-                    startTime: '14:00',
-                    endTime: '16:30',
-                    state: 'locked',
-                    password: 'password',
-                    content: 'Analyzing audio evidence for a legal case. Need to isolate background conversations and enhance clarity.',
-                    media: {
-                        audio: true
-                    }
-                },
-                {
-                    id: 3,
-                    date: new Date(currentYear, currentMonth, Math.max(1, currentDate - 1)),
-                    name: 'Historical Recording Digitization',
-                    startTime: '10:00',
-                    endTime: '11:30',
-                    state: 'greyed',
-                    password: 'password',
-                    content: 'Digitizing tape recordings from the 1970s. These are personal recordings from a client\'s family archive.',
-                    media: {
-                        audio: true
-                    }
-                },
-                {
-                    id: 4,
-                    date: new Date(currentYear, currentMonth, currentDate),
-                    name: 'Movie Set Audio Review',
-                    startTime: '13:00',
-                    endTime: '15:00',
-                    state: 'locked',
-                    password: 'password',
-                    content: 'Reviewing audio tracks from a recent film production. Checking for inconsistencies and background noise.',
-                    media: {
-                        video: true,
-                        audio: true
-                    },
-                    attendee: 'Mike'
-                },
-                {
-                    id: 5,
-                    date: new Date(currentYear, currentMonth, Math.min(28, currentDate + 2)),
-                    name: 'Music Restoration Project',
-                    startTime: '09:30',
-                    endTime: '13:00',
-                    state: 'locked',
-                    password: 'password',
-                    content: 'Working on restoring a rare jazz recording from the 1960s. The tape shows signs of degradation - need to carefully remove hiss and restore frequency response.',
-                    media: {
-                        audio: true,
-                        image: true
-                    }
-                },
-                {
-                    id: 6,
-                    date: new Date(currentYear, currentMonth, Math.min(28, currentDate + 5)),
+                    date: new Date(year, month, 2),
                     name: 'Client Meeting - Viola Project',
                     startTime: '15:00',
                     endTime: '16:00',
                     state: 'unlocked',
                     password: 'password',
-                    content: 'Discussion about Viola\'s audio restoration work. There\'s something intriguing about this project - the recordings seem to tell a story beyond just the audio quality.',
+                    content: 'Discussion about Viola\'s audio restoration work. There\'s something intriguing about this project - the recordings seem to tell a story beyond just the audio quality. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                     media: {
                         audio: true
                     },
-                    attendee: 'Claudia'
+                    participant: 'Mike'
                 },
                 {
-                    id: 7,
-                    date: new Date(currentYear, currentMonth, Math.min(28, currentDate + 8)),
-                    name: 'Tape Degradation Research',
-                    startTime: '11:00',
+                    id: 2,
+                    date: new Date(year, month, 4),
+                    name: 'Studio Equipment Documentation',
+                    startTime: '10:00',
+                    endTime: '11:30',
+                    state: 'unlocked',
+                    password: 'password',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+                    media: {
+                        image: true
+                    },
+                    participant: 'Pavel'
+                },
+                {
+                    id: 3,
+                    date: new Date(year, month, 6),
+                    name: 'Film Audio Post-Production Review',
+                    startTime: '14:00',
+                    endTime: '17:00',
+                    state: 'unlocked',
+                    password: 'password',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                    media: {
+                        video: true,
+                        audio: true
+                    },
+                    participant: 'Mike'
+                },
+                {
+                    id: 4,
+                    date: new Date(year, month, 8),
+                    name: 'Podcast Audio Editing Session',
+                    startTime: '09:00',
+                    endTime: '12:30',
+                    state: 'unlocked',
+                    password: 'password',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
+                    media: {
+                        audio: true
+                    },
+                    participant: 'Claudia L.'
+                },
+                // Middle third - Locked events (Dec 12, 15, 18)
+                {
+                    id: 5,
+                    date: new Date(year, month, 12),
+                    name: 'Audio Restoration Session',
+                    startTime: '09:00',
                     endTime: '12:00',
                     state: 'locked',
                     password: 'password',
-                    content: 'Documenting degradation patterns in various tape formats. This knowledge comes from years of experience with the medium.',
+                    content: 'Restoring audio from a 1980s music recording. Client: Independent filmmaker working on a documentary about the local music scene. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                     media: {
-                        image: true
+                        audio: true
+                    },
+                    participant: 'Mike'
+                },
+                {
+                    id: 6,
+                    date: new Date(year, month, 15),
+                    name: 'Forensic Audio Analysis',
+                    startTime: '14:00',
+                    endTime: '16:30',
+                    state: 'locked',
+                    password: 'password',
+                    content: 'Analyzing audio evidence for a legal case. Need to isolate background conversations and enhance clarity. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    media: {
+                        audio: true
+                    },
+                    participant: 'Pavel'
+                },
+                {
+                    id: 7,
+                    date: new Date(year, month, 18),
+                    name: 'Movie Set Audio Review',
+                    startTime: '13:00',
+                    endTime: '15:00',
+                    state: 'locked',
+                    password: 'password',
+                    content: 'Reviewing audio tracks from a recent film production. Checking for inconsistencies and background noise. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.',
+                    media: {
+                        video: true,
+                        audio: true
+                    },
+                    participant: 'Mike'
+                },
+                // Last third - Greyed out events (Dec 23, 28, 30)
+                {
+                    id: 8,
+                    date: new Date(year, month, 23),
+                    name: 'Historical Recording Digitization',
+                    startTime: '10:00',
+                    endTime: '11:30',
+                    state: 'greyed',
+                    password: 'password',
+                    content: 'Digitizing tape recordings from the 1970s. These are personal recordings from a client\'s family archive. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    media: {
+                        audio: true
                     }
                 },
                 {
-                    id: 8,
-                    date: new Date(currentYear, currentMonth + 1, 5),
+                    id: 9,
+                    date: new Date(year, month, 28),
                     name: 'Archive Organization',
                     startTime: '10:00',
                     endTime: '14:00',
                     state: 'greyed',
                     password: 'password',
-                    content: 'Organizing old project files. Some of these date back to when I first moved to Munich.',
+                    content: 'Organizing old project files. Some of these date back to when I first moved to Munich. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
                     media: null
+                },
+                {
+                    id: 10,
+                    date: new Date(year, month, 30),
+                    name: 'End of Year Review',
+                    startTime: '14:00',
+                    endTime: '16:00',
+                    state: 'greyed',
+                    password: 'password',
+                    content: 'Reviewing all projects from the past year. Preparing summaries and documentation for client archives. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    media: {
+                        image: true
+                    }
                 }
             ];
         },
@@ -211,29 +275,18 @@ function calendarApp() {
             const daysInPrevMonth = prevMonth.getDate();
             for (let i = startingDayOfWeek - 1; i >= 0; i--) {
                 const date = daysInPrevMonth - i;
-                this.calendarDays.push({
-                    date: date,
-                    otherMonth: true,
-                    isToday: false,
-                    year: prevMonth.getFullYear(),
-                    month: prevMonth.getMonth(),
-                    event: null
-                });
+                this.calendarDays.push(
+                    this.createDayObject(date, true, false, prevMonth.getFullYear(), prevMonth.getMonth())
+                );
             }
             
             // Current month days
             for (let date = 1; date <= daysInMonth; date++) {
                 const isToday = isCurrentMonth && date === today.getDate();
                 const event = this.getEventForDate(date, month, year);
-                
-                this.calendarDays.push({
-                    date: date,
-                    otherMonth: false,
-                    isToday: isToday,
-                    year: year,
-                    month: month,
-                    event: event
-                });
+                this.calendarDays.push(
+                    this.createDayObject(date, false, isToday, year, month, event)
+                );
             }
             
             // Next month days to fill the grid - ensure exactly 42 days (6 rows)
@@ -242,14 +295,9 @@ function calendarApp() {
             if (remainingDays > 0) {
                 for (let date = 1; date <= remainingDays; date++) {
                     const nextMonth = new Date(year, month + 1, date);
-                    this.calendarDays.push({
-                        date: date,
-                        otherMonth: true,
-                        isToday: false,
-                        year: nextMonth.getFullYear(),
-                        month: nextMonth.getMonth(),
-                        event: null
-                    });
+                    this.calendarDays.push(
+                        this.createDayObject(date, true, false, nextMonth.getFullYear(), nextMonth.getMonth())
+                    );
                 }
             }
             

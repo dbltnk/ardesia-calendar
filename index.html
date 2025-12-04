@@ -14,7 +14,10 @@
 <body x-data="calendarApp()" x-init="init()">
     <!-- Header -->
     <header class="header">
-        <h1 class="header-title">Ardesia Cloud Calendar</h1>
+        <div class="header-left">
+            <h1 class="header-title">My Calendar</h1>
+            <span class="header-subtitle">Ardesia Cloud</span>
+        </div>
         <!-- Calendar Navigation -->
         <div class="calendar-nav">
             <button @click="previousMonth()" class="nav-btn">‹</button>
@@ -32,6 +35,27 @@
             </div>
             <button @click="nextMonth()" class="nav-btn">›</button>
             <button @click="goToToday()" class="today-btn">Today</button>
+        </div>
+        <!-- User Profile -->
+        <div class="user-profile" @click.away="showUserMenu = false">
+            <div class="user-avatar" @click="showUserMenu = !showUserMenu">
+                <span x-text="user.initials"></span>
+            </div>
+            <div class="user-info" @click="showUserMenu = !showUserMenu">
+                <div class="user-name" x-text="user.name"></div>
+                <div class="user-role" x-text="user.role"></div>
+            </div>
+            <div x-show="showUserMenu" class="user-menu" x-transition>
+                <div class="user-menu-header">
+                    <div class="user-menu-name" x-text="user.name"></div>
+                    <div class="user-menu-email" x-text="user.email"></div>
+                </div>
+                <div class="user-menu-divider"></div>
+                <a href="#" class="user-menu-item">Account Settings</a>
+                <a href="#" class="user-menu-item">Preferences</a>
+                <div class="user-menu-divider"></div>
+                <a href="#" class="user-menu-item user-menu-item-danger">Sign Out</a>
+            </div>
         </div>
     </header>
 
@@ -64,9 +88,14 @@
                                 'event-unlocked': day.event.state === 'unlocked'
                             }"
                             :style="getEventStyle(day.event)"
-                            @click="day.event.state === 'locked' ? openPasswordModal(day.event) : openEventPopover(day.event)"
+                            @click="handleEventClick(day.event)"
                         >
-                            <div class="event-time" x-text="formatEventTime(day.event)"></div>
+                            <div class="event-time-row">
+                                <div class="event-time" x-text="formatEventTime(day.event)"></div>
+                                <template x-if="day.event.participant">
+                                    <div class="event-participant" x-text="day.event.participant"></div>
+                                </template>
+                            </div>
                             <div class="event-name">
                                 <span x-show="day.event.state === 'locked'" class="lock-icon">🔒</span>
                                 <span x-text="day.event.name"></span>
@@ -109,9 +138,36 @@
                     <h2 class="popover-title" x-text="eventPopover.event.name"></h2>
                     <div class="popover-time" x-text="formatEventTime(eventPopover.event)"></div>
                     <div class="popover-text">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <p x-text="eventPopover.event.content || 'No additional details available.'"></p>
                     </div>
+                    <template x-if="eventPopover.event.media">
+                        <div class="popover-media">
+                            <template x-if="eventPopover.event.media.image">
+                                <div class="media-placeholder media-image">
+                                    <div class="media-icon">🖼️</div>
+                                    <div class="media-label">Image</div>
+                                </div>
+                            </template>
+                            <template x-if="eventPopover.event.media.video">
+                                <div class="media-placeholder media-video">
+                                    <div class="media-icon">🎥</div>
+                                    <div class="media-label">Video</div>
+                                </div>
+                            </template>
+                            <template x-if="eventPopover.event.media.audio">
+                                <div class="media-placeholder media-audio">
+                                    <div class="media-icon">🎵</div>
+                                    <div class="media-label">Audio</div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <template x-if="eventPopover.event.participant">
+                        <div class="popover-attendee">
+                            <span class="popover-attendee-label">Participant:</span>
+                            <span class="popover-attendee-name" x-text="eventPopover.event.participant"></span>
+                        </div>
+                    </template>
                 </div>
             </template>
         </div>
