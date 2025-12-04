@@ -687,7 +687,7 @@ body {
 /* Floating Boxes */
 .floating-box {
     position: fixed;
-    bottom: 100px;
+    bottom: 20px;
     width: 280px;
     background-color: white;
     border: 2px solid var(--email);
