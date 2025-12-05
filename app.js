@@ -49,9 +49,6 @@ function calendarApp() {
         // Steam wishlist
         steamMinimized: false,
         
-        // Constants
-        DEFAULT_PASSWORD: 'password',
-        
         handleEventClick(event) {
             if (event.state === 'greyed') return;
             if (event.state === 'locked') {
@@ -389,26 +386,16 @@ function calendarApp() {
             return `${event.startTime} - ${event.endTime}`;
         },
         
-        parseTimeToMinutes(timeString) {
-            const [hours, minutes] = timeString.split(':').map(Number);
-            return hours * 60 + minutes;
-        },
-        
         getEventStyle(event) {
             // All events start at the same Y position
             // Set fixed top offset to ensure consistent spacing below day-number
-            // Day-number is approximately 18px (14px font + 4px margin-bottom) + 8px padding = ~26px
-            // Use 10% as fixed offset (approximately 30-40px in typical cells) to ensure consistent spacing
             const topPercent = 35;
             
-            // Use fixed height for all events to ensure single-line text display
-            const style = {
+            return {
                 top: `${topPercent}%`,
                 height: 'auto',
                 maxHeight: `calc(100% - ${topPercent}%)`
             };
-            
-            return style;
         },
         resetPasswordModal() {
             this.passwordModal.input = '';

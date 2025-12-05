@@ -86,9 +86,9 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-    .user-avatar {
-        width: 44px;
-        height: 44px;
+.user-avatar {
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background-color: var(--text-light);
     color: var(--email);
@@ -417,8 +417,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Removed unlock-btn, event-details, event-content, event-media, and event-attendee styles 
-   since we only show event name (single line) after timestamp */
 
 /* Modal */
 .modal-overlay {
@@ -681,6 +679,16 @@ body {
     justify-content: space-between;
     gap: 8px;
     font-size: 14px;
+}
+
+.popover-attendee-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.popover-attendee-row-right {
+    margin-left: auto;
 }
 
 .popover-attendee-label {
