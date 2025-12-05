@@ -37,7 +37,8 @@ function calendarApp() {
         // Event popover
         eventPopover: {
             show: false,
-            event: null
+            event: null,
+            justIncremented: false
         },
         
         // Subscription
@@ -100,6 +101,24 @@ function calendarApp() {
                     this.syncSelectElements(month, year);
                 });
             }, 50);
+        },
+        
+        generatePasswordCounter(event) {
+            if (event.state === 'unlocked') {
+                // Unlocked events: dozens to hundreds (10-999)
+                return Math.floor(Math.random() * 990) + 10;
+            } else if (event.state === 'locked') {
+                // Locked events: 0, 3, or 7 times, newer events are less
+                // Dec 12, 15, 18 - Dec 18 is newest (0), Dec 15 is middle (3), Dec 12 is oldest (7)
+                const day = event.date.getDate();
+                if (day === 18) return 0;  // Newest
+                if (day === 15) return 3;   // Middle
+                if (day === 12) return 7;   // Oldest
+                // For any other locked events, randomly assign 0, 3, or 7
+                const values = [0, 3, 7];
+                return values[Math.floor(Math.random() * values.length)];
+            }
+            return 0;
         },
         
         loadSampleEvents() {
@@ -252,6 +271,11 @@ function calendarApp() {
                     }
                 }
             ];
+            
+            // Add password counter to each event
+            this.events.forEach(event => {
+                event.passwordCounter = this.generatePasswordCounter(event);
+            });
         },
         
         updateCalendar() {
@@ -404,6 +428,18 @@ function calendarApp() {
                 // Unlock the event
                 const unlockedEvent = this.passwordModal.event;
                 unlockedEvent.state = 'unlocked';
+                
+                // Increment counter if this is the first time opening after unlock
+                if (!unlockedEvent.hasBeenOpened) {
+                    unlockedEvent.passwordCounter = (unlockedEvent.passwordCounter || 0) + 1;
+                    unlockedEvent.hasBeenOpened = true;
+                    this.eventPopover.justIncremented = true;
+                    // Reset the celebration flag after animation
+                    setTimeout(() => {
+                        this.eventPopover.justIncremented = false;
+                    }, 1000);
+                }
+                
                 this.closePasswordModal();
                 // Show popover after unlocking
                 this.openEventPopover(unlockedEvent);

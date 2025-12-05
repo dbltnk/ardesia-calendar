@@ -162,12 +162,23 @@
                             </template>
                         </div>
                     </template>
-                    <template x-if="eventPopover.event.participant">
-                        <div class="popover-attendee">
-                            <span class="popover-attendee-label">Participant:</span>
-                            <span class="popover-attendee-name" x-text="eventPopover.event.participant"></span>
-                        </div>
-                    </template>
+                    <div class="popover-attendee">
+                        <template x-if="eventPopover.event.participant">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="popover-attendee-label">Participant:</span>
+                                <span class="popover-attendee-name" x-text="eventPopover.event.participant"></span>
+                            </div>
+                        </template>
+                        <template x-if="eventPopover.event.state === 'locked' || eventPopover.event.state === 'unlocked'">
+                            <div style="display: flex; align-items: center; gap: 8px;" :style="eventPopover.event.participant ? 'margin-left: auto;' : ''">
+                                <span class="popover-attendee-label">Opened:</span>
+                                <span class="popover-attendee-name popover-counter-value" 
+                                      :class="{ 'celebrate': eventPopover.justIncremented }"
+                                      x-text="eventPopover.event.passwordCounter || 0"></span>
+                                <span class="popover-attendee-label">times</span>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </template>
         </div>

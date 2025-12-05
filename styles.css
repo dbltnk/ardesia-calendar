@@ -639,6 +639,7 @@ body {
     border-top: 1px solid var(--bg-grey);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     font-size: 14px;
 }
@@ -651,6 +652,52 @@ body {
 .popover-attendee-name {
     color: var(--text-dark);
     font-weight: 500;
+}
+
+.popover-counter-value {
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.popover-counter-value.celebrate {
+    animation: celebrate 1s ease;
+}
+
+@keyframes celebrate {
+    0% {
+        transform: scale(1);
+        color: var(--text-dark);
+    }
+    15% {
+        transform: scale(2.5) rotate(-10deg);
+        color: var(--stratosphere-messenger);
+        font-weight: 700;
+    }
+    30% {
+        transform: scale(2.5) rotate(10deg);
+        color: var(--stratosphere-messenger);
+        font-weight: 700;
+    }
+    45% {
+        transform: scale(2.5) rotate(-10deg);
+        color: var(--stratosphere-messenger);
+        font-weight: 700;
+    }
+    60% {
+        transform: scale(2.5) rotate(10deg);
+        color: var(--stratosphere-messenger);
+        font-weight: 700;
+    }
+    75% {
+        transform: scale(1.8) rotate(-5deg);
+        color: var(--stratosphere-messenger);
+        font-weight: 700;
+    }
+    100% {
+        transform: scale(1);
+        color: var(--text-dark);
+        font-weight: 500;
+    }
 }
 
 /* Success Message */
