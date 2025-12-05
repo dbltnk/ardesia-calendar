@@ -90,6 +90,12 @@ function calendarApp() {
             this.loadSampleEvents();
             this.updateCalendar();
             
+            // Start floating boxes minimized on mobile
+            if (window.innerWidth <= 768) {
+                this.subscribeMinimized = true;
+                this.steamMinimized = true;
+            }
+            
             // Force select elements to sync after DOM is ready
             // This ensures the select options are rendered before we try to set values
             setTimeout(() => {

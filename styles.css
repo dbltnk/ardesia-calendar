@@ -20,6 +20,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+    outline: none;
 }
 
 body {
@@ -81,9 +86,9 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
+    .user-avatar {
+        width: 44px;
+        height: 44px;
     border-radius: 50%;
     background-color: var(--text-light);
     color: var(--email);
@@ -202,14 +207,20 @@ body {
     cursor: pointer;
     font-size: 20px;
     font-weight: 300;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .nav-btn:hover {
     background-color: var(--bg-grey);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
 }
 
 .today-btn {
@@ -222,11 +233,17 @@ body {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
     font-size: 14px;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .today-btn:hover {
     background-color: var(--bg-grey);
+}
+
+.today-btn:active {
+    transform: scale(0.95);
 }
 
 .nav-display {
@@ -443,8 +460,10 @@ body {
     border: 1px solid var(--bg-grey);
     border-radius: 4px;
     font-family: 'Roboto', sans-serif;
-    font-size: 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
     margin-bottom: 20px;
+    min-height: 44px;
+    box-sizing: border-box;
 }
 
 .password-input:focus {
@@ -467,11 +486,18 @@ body {
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    touch-action: manipulation;
+    user-select: none;
+    min-height: 44px;
 }
 
 .btn-primary:hover {
     background-color: var(--wavesplice);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
 }
 
 .btn-secondary {
@@ -483,11 +509,18 @@ body {
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    touch-action: manipulation;
+    user-select: none;
+    min-height: 44px;
 }
 
 .btn-secondary:hover {
     background-color: var(--file-manager);
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
 }
 
 .error-message {
@@ -537,11 +570,17 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 .popover-close:hover {
     background-color: var(--bg-light);
+}
+
+.popover-close:active {
+    transform: scale(0.9);
 }
 
 .popover-date {
@@ -807,8 +846,10 @@ body {
     border: 1px solid var(--bg-grey);
     border-radius: 4px;
     font-family: 'Roboto', sans-serif;
-    font-size: 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
     margin-bottom: 12px;
+    min-height: 44px;
+    box-sizing: border-box;
 }
 
 .subscribe-input:focus {
@@ -867,6 +908,7 @@ body {
     }
 }
 
+/* Tablet and below */
 @media (max-width: 1023px) {
     .calendar-container {
         padding: 15px 20px;
@@ -874,6 +916,399 @@ body {
     
     .floating-box {
         width: 240px;
+    }
+    
+    .header {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .calendar-nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .user-profile {
+        order: 2;
+    }
+    
+    .header-left {
+        order: 1;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 60px;
+    }
+    
+    /* Header */
+    .header {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 12px;
+        position: relative;
+    }
+    
+    .header-left {
+        order: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .header-title {
+        font-size: 20px;
+        margin: 0;
+        line-height: 1.2;
+    }
+    
+    .header-subtitle {
+        font-size: 11px;
+    }
+    
+    .calendar-nav {
+        order: 3;
+        width: 100%;
+        margin-top: 0;
+        gap: 8px;
+        justify-content: center;
+        flex-basis: 100%;
+    }
+    
+    .nav-btn {
+        width: auto;
+        height: auto;
+        padding: 8px 12px;
+        font-size: 18px;
+    }
+    
+    .today-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    .month-select,
+    .year-select {
+        padding: 8px 8px;
+        font-size: 13px;
+    }
+    
+    .user-profile {
+        order: 2;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+        align-self: flex-start;
+    }
+    
+    .user-info {
+        display: none; /* Hide user info text on mobile, keep avatar */
+    }
+    
+    .user-menu {
+        right: 0;
+        left: auto;
+        min-width: 200px;
+    }
+    
+    /* Calendar Container */
+    .calendar-container {
+        padding: 10px 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    
+    .calendar-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .calendar-container::-webkit-scrollbar-track {
+        background: var(--bg-light);
+    }
+    
+    .calendar-container::-webkit-scrollbar-thumb {
+        background: var(--bg-grey);
+        border-radius: 3px;
+    }
+    
+    /* Calendar Grid */
+    .calendar-grid {
+        min-width: 100%;
+        width: 100%;
+        gap: 0.5px;
+    }
+    
+    .day-header {
+        padding: 8px 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .day-cell {
+        padding: 4px;
+        min-height: 60px;
+    }
+    
+    .day-number {
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
+    
+    /* Event Block */
+    .event-block {
+        left: 4px;
+        right: 4px;
+        padding: 4px 6px;
+        font-size: 11px;
+        min-height: 40px;
+        max-width: calc(100% - 8px);
+    }
+    
+    .event-time {
+        font-size: 10px;
+    }
+    
+    .event-participant {
+        font-size: 9px;
+    }
+    
+    .event-name {
+        font-size: 11px;
+    }
+    
+    .lock-icon {
+        font-size: 10px;
+    }
+    
+    /* Modals and Popovers */
+    .modal-content,
+    .popover-content {
+        width: 95%;
+        max-width: 95%;
+        padding: 20px;
+        margin: 20px;
+        max-height: 85vh;
+    }
+    
+    .modal-content h2 {
+        font-size: 20px;
+    }
+    
+    .popover-title {
+        font-size: 20px;
+    }
+    
+    .popover-close {
+        top: 10px;
+        right: 10px;
+        width: 44px;
+        height: 44px;
+        font-size: 24px;
+    }
+    
+    /* Floating Boxes */
+    .floating-box {
+        width: calc(100% - 30px);
+        max-width: 320px;
+        bottom: 70px; /* Above footer to avoid overlap */
+    }
+    
+    .floating-subscribe {
+        left: 15px;
+        right: auto;
+    }
+    
+    .floating-steam {
+        right: 15px;
+        left: auto;
+    }
+    
+    .floating-box.minimized {
+        min-width: 160px;
+    }
+    
+    .floating-box-header {
+        padding: 10px 12px;
+    }
+    
+    .floating-box-header span {
+        font-size: 13px;
+    }
+    
+    .floating-box-content {
+        padding: 12px;
+    }
+    
+    .floating-box-content p {
+        font-size: 12px;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .footer-link {
+        font-size: 12px;
+    }
+    
+    /* Success Message */
+    .success-message {
+        top: 60px;
+        left: 15px;
+        right: 15px;
+        transform: none;
+        padding: 12px 35px 12px 15px;
+        font-size: 13px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 12px;
+    }
+    
+    .header-title {
+        font-size: 18px;
+    }
+    
+    .calendar-nav {
+        gap: 6px;
+    }
+    
+    .nav-btn {
+        width: auto;
+        height: auto;
+        padding: 6px 10px;
+        font-size: 16px;
+    }
+    
+    .today-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    .month-select,
+    .year-select {
+        padding: 6px 6px;
+        font-size: 12px;
+    }
+    
+    .calendar-container {
+        padding: 8px 4px;
+    }
+    
+    .calendar-grid {
+        min-width: 100%;
+        width: 100%;
+    }
+    
+    .calendar-container::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .day-header {
+        padding: 6px 2px;
+        font-size: 11px;
+    }
+    
+    .day-cell {
+        padding: 3px;
+        min-height: 50px;
+    }
+    
+    .day-number {
+        font-size: 11px;
+    }
+    
+    .event-block {
+        padding: 3px 4px;
+        font-size: 10px;
+        min-height: 35px;
+    }
+    
+    .event-time {
+        font-size: 9px;
+    }
+    
+    .event-participant {
+        font-size: 8px;
+    }
+    
+    .event-name {
+        font-size: 10px;
+    }
+    
+    .modal-content,
+    .popover-content {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .modal-content h2 {
+        font-size: 18px;
+    }
+    
+    .popover-title {
+        font-size: 18px;
+    }
+    
+    .floating-box {
+        width: calc(100% - 20px);
+        bottom: 65px; /* Above footer to avoid overlap */
+    }
+    
+    .floating-subscribe {
+        left: 10px;
+    }
+    
+    .floating-steam {
+        right: 10px;
+    }
+    
+    .footer {
+        padding: 10px 12px;
+        gap: 12px;
+    }
+    
+    .footer-link {
+        font-size: 11px;
+    }
+    
+    .success-message {
+        top: 50px;
+        left: 10px;
+        right: 10px;
+        padding: 10px 30px 10px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .calendar-grid {
+        min-width: 700px;
+    }
+    
+    .day-cell {
+        min-height: 50px;
+    }
+    
+    .floating-box {
+        bottom: 60px;
     }
 }
 
